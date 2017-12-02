@@ -1,1 +1,5 @@
 .vscode
+.DS_Store
+database.nosql
+/node_modules/
+/build/
