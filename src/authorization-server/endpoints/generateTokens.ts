@@ -17,14 +17,27 @@ interface ITokenPayload {
 }
 
 /* tslint:disable */
-const rsaKey = {
-    "alg": "RS256",
-    "d": "ZXFizvaQ0RzWRbMExStaS_-yVnjtSQ9YslYQF1kkuIoTwFuiEQ2OywBfuyXhTvVQxIiJqPNnUyZR6kXAhyj__wS_Px1EH8zv7BHVt1N5TjJGlubt1dhAFCZQmgz0D-PfmATdf6KLL4HIijGrE8iYOPYIPF_FL8ddaxx5rsziRRnkRMX_fIHxuSQVCe401hSS3QBZOgwVdWEb1JuODT7KUk7xPpMTw5RYCeUoCYTRQ_KO8_NQMURi3GLvbgQGQgk7fmDcug3MwutmWbpe58GoSCkmExUS0U-KEkHtFiC8L6fN2jXh1whPeRCa9eoIK8nsIY05gnLKxXTn5-aPQzSy6Q",
-    "e": "AQAB",
-    "n": "p8eP5gL1H_H9UNzCuQS-vNRVz3NWxZTHYk1tG9VpkfFjWNKG3MFTNZJ1l5g_COMm2_2i_YhQNH8MJ_nQ4exKMXrWJB4tyVZohovUxfw-eLgu1XQ8oYcVYW8ym6Um-BkqwwWL6CXZ70X81YyIMrnsGTyTV6M8gBPun8g2L8KbDbXR1lDfOOWiZ2ss1CRLrmNM-GRp3Gj-ECG7_3Nx9n_s5to2ZtwJ1GS1maGjrSZ9GRAYLrHhndrL_8ie_9DS2T-ML7QNQtNkg2RvLv4f0dpjRYI23djxVtAylYK4oiT_uEMgSkc4dxwKwGuBxSO0g9JOobgfy0--FUHHYtRi0dOFZw",
-    "kty": "RSA",
-    "kid": "authserver"
+const privateRsaKey =  {
+    kty: 'RSA',
+    n: 'hriFh7nnhFjiVsoNt5C-aYOkD8OrnjsorNzTLrmUbbOSLFLJJD3Ws7Mw9Dd0UGlEr3gp8s4dsGD-A-KLXNGCeH2bo7H8UyRQkzw47FrEgV4KovuJs-0ccpfn765_gBLZ9y95aDpZh5TM8aF7HXGCiToYZwayZur8Bg1J9hUFj6MNuKJ4FKdJmirSi3GjuCgmjnRPjC3H0kJymapwlrDmBiChYzGd5Hlf6Kfp3iwFONOV6oa9VCig42bsxKkdhviN-MBuIvSAXNMFSBkMFRwuiTniWAGdLRXriZlOPq47TU3syYYZ9A0aBkjga6Y-0S87HbtKON-WVJPX_m96gEr1Cw',
+    e: 'AQAB',
+    d: 'ZlR6eOHozUqGgc3wJWK4f4USdTb3gLUG7Ga_slocOEeR3ED1r6WZE94kbRxCKWIMXgw0MM4HFxZVW7YUjWhGZiditTBYrP6EhZHU2xMG-Azqn2nY6uZMGW7xKcmt5yZqkatp2JWZs7Z_BXrW_UJfGMUcDAW2NR6AWEh3yYemNbdVawgd9yU-VH44DZeX0EpqF_EpPYjA4Y61RTUwQj6N2M7kdhbxufkB-1JR88XXeclZ5OPIZ7oU0jEZOG5ffh5RHs2ugtKnEhDBQiNtjUt7s77rusrFQxNEm0otl1PLIP6mj5jFMA-upcLDmeR7IQOuGQW2ZufL-iM_OMGjel8joQ',
+    p: 'yjS-TGj4EhTZ9ULSikQeMBHaZo4VKaWQHzUllmWqa7qZch9aXdG_Ey3ghHR7dMi3JO9uZNQ1hpGZKq58vR8Eao_TZBIJFAy9lW019laQsRHULa4gM5q8mgLPM2H7iywFAbTnhVaADTkJZpw6CHr6H_SXQoLsUZ3abhzSuayc800',
+    q: 'qo-w3NPiHw2yDqdkQrKfnyHZE3o1V6rmFlG5tgLJ9XQ2dZxw6baj24dEzti1tfCcXvhZwNYA_C6uFSR40SaHtw8pklKTH-5K3K3Ad2OJHo7a0Pr6KI8y6jqU_MJ76qttXxtzyjKEpK_dsnqHHPx25SjVSgbiSG1VKqCAkgdmrbc',
+    dp: 'BkHTkbG923FhvUEwGq847-vdgkbrSLqi1xRh8WF8AJFppipqNXUEIKfOxsqD930ujaoLFHusnFltD_EOUxvemx2QQQx9020BgNo8TT8ogxI2KqO0w2QKagmkN8bUbd4S2Zarg2jF1aLqM46qDREhJFQBSkGa5nuoArhJnQ1GXhE',
+    dq: 'U13Sg81o6-bEzlbRMayfSqe_s757DjOxLN2bWTR5xGieKdRieEnWQ3oVjsjr4FcQB3d6Xz_60Uh7vEfMaeZcVYSqvCNyWBwgKUcgGPrkzbPjjlvuJB8CMuyZYAYrjWNnHSKM8RrKLLjtMsyi9-8Kqi3QOtOsjNwr0Z8L2NSXQnc',
+    qi: 'aQIs-h62BSQLEtAw9PJQAKgb8wxh2Lq9gZS7avJB9mi03Y51OkDsPszxzvVr6hMhOcDV5uc-0it0ZSBJp2RcTMt_l1-V6Rnxm1TejL-yRKgZolzTFi-gT7XqiRPVqa9vir0CDwqbq-PL0uCEfxizJV9091v3j3dOIgoAZ0AMVd0'
 };
+
+const publicRsaKeyPEM = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhriFh7nnhFjiVsoNt5C+
+aYOkD8OrnjsorNzTLrmUbbOSLFLJJD3Ws7Mw9Dd0UGlEr3gp8s4dsGD+A+KLXNGC
+eH2bo7H8UyRQkzw47FrEgV4KovuJs+0ccpfn765/gBLZ9y95aDpZh5TM8aF7HXGC
+iToYZwayZur8Bg1J9hUFj6MNuKJ4FKdJmirSi3GjuCgmjnRPjC3H0kJymapwlrDm
+BiChYzGd5Hlf6Kfp3iwFONOV6oa9VCig42bsxKkdhviN+MBuIvSAXNMFSBkMFRwu
+iTniWAGdLRXriZlOPq47TU3syYYZ9A0aBkjga6Y+0S87HbtKON+WVJPX/m96gEr1
+CwIDAQAB
+-----END PUBLIC KEY-----`
 /* tslint:enable */
 
 const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
@@ -37,7 +50,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
         refreshToken = randomstring.generate();
     }
 
-    const header = { typ: "JWT", alg: "RS256", kid: rsaKey.kid };
+    const header = { typ: "JWT", alg: "RS256", kid: jose.KJUR.jws.JWS.getJWKthumbprint(privateRsaKey) };
 
     const payload: ITokenPayload = {
         iss: "http://localhost:9001/",
@@ -53,7 +66,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
 
     const stringHeader = JSON.stringify(header);
     const stringPayload = JSON.stringify(payload);
-    const privateKey = jose.KEYUTIL.getKey(rsaKey);
+    const privateKey = jose.KEYUTIL.getKey(privateRsaKey);
     const idToken = jose.jws.JWS.sign("RS256", stringHeader, stringPayload, privateKey);
 
     nosql.insert({ access_token: accessToken, client_id: clientId, scope, user });
@@ -81,3 +94,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
 };
 
 export default generateTokens;
+
+export const getPublickey = () => {
+    return publicRsaKeyPEM;
+};

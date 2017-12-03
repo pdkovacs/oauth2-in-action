@@ -7,6 +7,7 @@ import { getClients } from "./data";
 import authorizationEndpoint from "./endpoints/authorization";
 import approveEndpoint from "./endpoints/approve";
 import tokenEndpoint from "./endpoints/token";
+import publickeyEndpoint from "./endpoints/publickey";
 
 import nosql from "./store";
 import logger from "../logger";
@@ -21,15 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support form-encoded bodi
 
 app.engine("html", cons.underscore);
 app.set("view engine", "html");
-app.set("views", "files/authorizationServer");
-app.set("json spaces", 4);
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // support form-encoded bodies (for the token endpoint)
-
-app.engine("html", cons.underscore);
-app.set("view engine", "html");
-app.set("views", "files/authorizationServer");
+app.set("views", "src/authorization-server/views");
 app.set("json spaces", 4);
 
 // authorization server information
@@ -43,10 +36,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/authorize", authorizationEndpoint);
-
 app.post("/approve", approveEndpoint);
-
 app.post("/token", tokenEndpoint);
+app.get("/publickey", publickeyEndpoint);
 
 app.use("/", express.static("files/authorizationServer"));
 

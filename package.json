@@ -30,13 +30,15 @@
     "@types/underscore": "^1.8.5",
     "@types/underscore.string": "0.0.32",
     "@types/winston": "^2.3.0",
+    "concurrently": "^3.5.1",
+    "nodemon": "^1.12.1",
     "tslint": "^5.6.0",
     "typescript": "^2.4.2"
   },
   "scripts": {
     "lint": "tslint -c tslint.json '{src,test}/**/*.{ts,tsx}'",
     "start": "tsc && node build/index.js",
-    "dev": "tsc --watch & cd build/ && nodemon ./index.js",
+    "dev:authrzn": "concurrently --kill-others \"tsc --watch\" \"nodemon --watch build build/authorization-server/authorizationServer.js\"",
     "build": "tsc",
     "run": "rm -rf build dist && tsc && node dist/noip-updater.js",
     "package": "npm run build && tar -C $(dirname $PWD) -czf dist/$(basename $PWD).tgz --exclude 'node_modules/@types' --exclude '.DS_Store' $(basename $PWD)/node_modules $(basename $PWD)/build"
