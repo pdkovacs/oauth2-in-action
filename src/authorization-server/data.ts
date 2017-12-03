@@ -121,4 +121,4 @@ export const getAuthorizationCode = (codeId: string) => {
         delete codes[codeId];
     }
     return code;
-}
+};
