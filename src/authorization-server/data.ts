@@ -53,7 +53,7 @@ const clients: IClient[] = [
     {
         client_id: "oauth-client-1",
         client_secret: "oauth-client-secret-1",
-        redirect_uris: ["http://localhost:9000/callback"],
+        redirect_uris: ["http://localhost:8080/oauth2-login"],
         scope: "foo bar"
     },
     {
@@ -61,7 +61,7 @@ const clients: IClient[] = [
         client_secret: "oauth-client-secret-1",
         redirect_uris: ["http://localhost:9000/callback"],
         scope: "bar"
-        },
+    },
     {
         client_id: "native-client-1",
         client_secret: "oauth-native-secret-1",

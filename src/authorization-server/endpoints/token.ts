@@ -54,20 +54,21 @@ export default (req: Request, res: Response) => {
 
         if (code) {
             if (code.request.client_id === clientId) {
-
-                const accessToken = randomstring.generate();
-
-                nosql.insert({ access_token: accessToken, client_id: clientId, scope: code.scope });
-
-                logger.log("info", "Issuing access token %s, with scope %s", accessToken, code.scope);
-
-                const cscope = code.scope ? code.scope.join(" ") : null;
-
-                const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: cscope };
-
+                const username = code.user;
+                const userInfo = getUserInfo(username);
+                logger.log("info", "username: %s, userInfo: %s", username, JSON.stringify(userInfo));
+                const scope = req.body.scope;
+                const tokenResponse = generateTokens(clientId, userInfo, scope);
                 res.status(200).json(tokenResponse);
-                logger.log("info", "Issued tokens for code %s", req.body.code);
 
+                // const accessToken = randomstring.generate();
+                // nosql.insert({ access_token: accessToken, client_id: clientId, scope: code.scope });
+                // logger.log("info", "Issuing access token %s, with scope %s", accessToken, code.scope);
+                // const cscope = code.scope ? code.scope.join(" ") : null;
+                // const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: cscope };
+                // res.status(200).json(tokenResponse);
+
+                logger.log("info", "Issued tokens for code %s", req.body.code);
                 return;
             } else {
                 logger.log("error", "Client mismatch, expected %s got %s", code.request.client_id, clientId);
@@ -126,25 +127,23 @@ export default (req: Request, res: Response) => {
         });
     } else if (req.body.grant_type === "password") {
         const username = req.body.username;
-        const user = getUserInfo(username);
-        if (!user) {
-            logger.log("error", "Unknown user %s", user);
+        const userInfo = getUserInfo(username);
+        if (!userInfo) {
+            logger.log("error", "Unknown user %s", userInfo);
             res.status(401).json({error: "invalid_grant"});
             return;
         }
-        logger.log("info", "user is %j ", user);
+        logger.log("info", "user is %j ", userInfo);
 
         const password = req.body.password;
-        if (user.password !== password) {
-            logger.log("error", "Mismatched resource owner password, expected %s got %s", user.password, password);
+        if (userInfo.password !== password) {
+            logger.log("error", "Mismatched resource owner password, expected %s got %s", userInfo.password, password);
             res.status(401).json({error: "invalid_grant"});
             return;
         }
 
         const scope = req.body.scope;
-
-        const tokenResponse = generateTokens(clientId, user, scope);
-
+        const tokenResponse = generateTokens(clientId, userInfo, scope);
         res.status(200).json(tokenResponse);
         return;
     } else {
