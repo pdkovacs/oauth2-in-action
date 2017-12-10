@@ -9,6 +9,7 @@ export interface IUserInfo {
     email_verified: boolean;
     username?: string;
     password?: string;
+    authorities?: string[];
 }
 
 const userInfo: { [key: string]: IUserInfo } = {
@@ -17,7 +18,10 @@ const userInfo: { [key: string]: IUserInfo } = {
         preferred_username: "alice",
         name: "Alice",
         email: "alice.wonderland@example.com",
-        email_verified: true
+        email_verified: true,
+        authorities: [
+            "ROLE_USER"
+        ]
     },
 
     bob: {
@@ -25,7 +29,10 @@ const userInfo: { [key: string]: IUserInfo } = {
         preferred_username: "bob",
         name: "Bob",
         email: "bob.loblob@example.net",
-        email_verified: false
+        email_verified: false,
+        authorities: [
+            "ROLE_USER"
+        ]
     },
 
     carol: {
@@ -34,8 +41,9 @@ const userInfo: { [key: string]: IUserInfo } = {
         name: "Carol",
         email: "carol.lewis@example.net",
         email_verified: true,
-        username : "clewis",
-        password : "user password!"
+        authorities: [
+            "ROLE_USER"
+        ]
     }
 };
 

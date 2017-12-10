@@ -68,7 +68,7 @@ export default (req: Request, res: Response) => {
                 // const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: cscope };
                 // res.status(200).json(tokenResponse);
 
-                logger.log("info", "Issued tokens for code %s", req.body.code);
+                logger.log("info", "Issued tokens for code %s", req.body.code, tokenResponse);
                 return;
             } else {
                 logger.log("error", "Client mismatch, expected %s got %s", code.request.client_id, clientId);

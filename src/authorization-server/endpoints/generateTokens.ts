@@ -6,16 +6,6 @@ import logger from "../../logger";
 // tslint:disable-next-line
 const jose = require("jsrsasign");
 
-interface ITokenPayload {
-    iss: string;
-    sub: string;
-    aud: string;
-    iat: number;
-    exp: number;
-    jti?: string;
-    nonce?: string;
-}
-
 /* tslint:disable */
 const privateRsaKey =  {
     kty: 'RSA',
@@ -40,6 +30,18 @@ CwIDAQAB
 -----END PUBLIC KEY-----`
 /* tslint:enable */
 
+interface ITokenPayload {
+    iss: string;
+    sub: string;
+    aud: string;
+    iat: number;
+    exp: number;
+    jti: string;
+    authorities?: string[];
+    username?: string;
+    nonce?: string;
+}
+
 const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
                         nonce?: string, generateRefreshToken?: boolean) => {
     const accessToken: string = randomstring.generate();
@@ -57,7 +59,10 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
         sub: user.sub,
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (5 * 60)
+        exp: Math.floor(Date.now() / 1000) + (5 * 60),
+        jti: randomstring.generate(),
+        authorities: user.authorities,
+        username: user.email
     };
 
     if (nonce) {
@@ -87,8 +92,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
         cscope = scope.join(" ");
     }
 
-    const tokenResponse = { access_token: accessToken, token_type: "Bearer",
-                            refresh_token: refreshToken, scope: cscope, id_token: idToken };
+    const tokenResponse = { access_token: idToken, token_type: "Bearer" };
 
     return tokenResponse;
 };
