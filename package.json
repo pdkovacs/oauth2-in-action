@@ -36,12 +36,7 @@
     "typescript": "^2.4.2"
   },
   "scripts": {
-    "lint": "tslint -c tslint.json '{src,test}/**/*.{ts,tsx}'",
-    "start": "tsc && node build/index.js",
-    "dev:authrzn": "concurrently --kill-others \"tsc --watch\" \"nodemon --watch build build/authorization-server/authorizationServer.js\"",
-    "build": "tsc",
-    "run": "rm -rf build dist && tsc && node dist/noip-updater.js",
-    "package": "npm run build && tar -C $(dirname $PWD) -czf dist/$(basename $PWD).tgz --exclude 'node_modules/@types' --exclude '.DS_Store' $(basename $PWD)/node_modules $(basename $PWD)/build"
+    "dev:authrzn": "concurrently --kill-others \"tsc --watch\" \"nodemon --watch build build/authorization-server/authorizationServer.js\""
   },
   "author": "peter.dunay.kovacs@gmail.com",
   "license": "Apache-2.0"
