@@ -30,6 +30,11 @@ CwIDAQAB
 -----END PUBLIC KEY-----`
 /* tslint:enable */
 
+/**
+ * Allows the payload to be a hybrid of both auth and id tokens for the use case
+ * where plain OAuth 2 is used (as an OpenID Connect on diet) for authentication
+ * and a single token is issued to act both as an access token and as an ID token.
+ */
 interface ITokenPayload {
     iss: string;
     sub: string;
@@ -42,10 +47,15 @@ interface ITokenPayload {
     nonce?: string;
 }
 
+const packUpTokenPayload = (header: any, payload: ITokenPayload) => {
+    const stringHeader = JSON.stringify(header);
+    const stringPayload = JSON.stringify(payload);
+    const privateKey = jose.KEYUTIL.getKey(privateRsaKey);
+    return jose.jws.JWS.sign("RS256", stringHeader, stringPayload, privateKey);
+};
+
 const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
                         nonce?: string, generateRefreshToken?: boolean) => {
-    const accessToken: string = randomstring.generate();
-
     let refreshToken = null;
 
     if (generateRefreshToken) {
@@ -54,27 +64,36 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
 
     const header = { typ: "JWT", alg: "RS256", kid: jose.KJUR.jws.JWS.getJWKthumbprint(privateRsaKey) };
 
-    const payload: ITokenPayload = {
+    const accessTokenPayload: ITokenPayload = {
         iss: "http://localhost:9001/",
         sub: user.sub,
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + (5 * 60),
+        jti: randomstring.generate()
+    };
+
+    if (nonce) {
+        accessTokenPayload.nonce = nonce;
+    }
+
+    const idTokenPayload: ITokenPayload = {
+        iss: "http://localhost:9001",
+        sub: user.sub,
+        aud: clientId,
+        iat: Math.floor(Date.now() / 1000),
+        exp:  Math.floor(Date.now() / 1000) + (5 * 60),
         jti: randomstring.generate(),
         authorities: user.authorities,
         username: user.email
     };
 
     if (nonce) {
-        payload.nonce = nonce;
+        idTokenPayload.nonce = nonce;
     }
 
-    const stringHeader = JSON.stringify(header);
-    const stringPayload = JSON.stringify(payload);
-    const privateKey = jose.KEYUTIL.getKey(privateRsaKey);
-    const idToken = jose.jws.JWS.sign("RS256", stringHeader, stringPayload, privateKey);
-
-    nosql.insert({ access_token: accessToken, client_id: clientId, scope, user });
+    const accessToken = packUpTokenPayload(header, accessTokenPayload);
+    const idToken = packUpTokenPayload(header, idTokenPayload);
 
     if (refreshToken) {
         nosql.insert({ refresh_token: refreshToken, client_id: clientId, scope, user });
@@ -92,7 +111,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
         cscope = scope.join(" ");
     }
 
-    const tokenResponse = { access_token: idToken, token_type: "Bearer" };
+    const tokenResponse = { access_token: accessToken, token_type: "Bearer", id_token: idToken };
 
     return tokenResponse;
 };
