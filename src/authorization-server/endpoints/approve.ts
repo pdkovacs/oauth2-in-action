@@ -1,3 +1,5 @@
+import { Request, Response } from "express";
+
 import { getAuthorizationRequest, getClient, addAuthorizationCode, getUserInfo } from "../data";
 import logger from "../../logger";
 import { buildUrl } from "../../utils";
@@ -9,7 +11,7 @@ import * as qs from "qs";
 import * as __ from "underscore";
 import * as __string from "underscore.string";
 
-export default (req: any, res: any) => {
+export default (req: Request, res: Response) => {
 
     const reqid = req.body.reqid;
     const query = getAuthorizationRequest(reqid);

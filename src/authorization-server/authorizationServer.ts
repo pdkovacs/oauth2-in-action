@@ -31,7 +31,7 @@ const authServer = {
     tokenEndpoint: "http://localhost:9001/token"
 };
 
-app.get("/", (req, res) => {
+app.get("/", (req: express.Request, res: express.Response) => {
     res.render("index", {clients: getClients(), authServer});
 });
 

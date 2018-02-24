@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { getClient, addAuthorizationRequest } from "../data";
 
 import logger from "../../logger";
@@ -7,7 +8,7 @@ import * as randomstring from "randomstring";
 
 import * as __ from "underscore";
 
-export default (req: any, res: any) => {
+export default (req: Request, res: Response) => {
 
     const client = getClient(req.query.client_id);
 
