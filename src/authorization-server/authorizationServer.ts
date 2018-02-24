@@ -39,6 +39,11 @@ app.get("/authorize", authorizationEndpoint);
 app.post("/approve", approveEndpoint);
 app.post("/token", tokenEndpoint);
 app.get("/publickey", publickeyEndpoint);
+app.get("/logout", (req: express.Request, res: express.Response) => {
+    logger.log("info", "Place holder /logout end-point");
+    logger.log("info", "Request to redirect to %s after logging user back is noted", req.query.service);
+    res.end();
+});
 
 // app.options("/*", (req, res, next) => {
 //     res.header("Access-Control-Allow-Origin", "*");
