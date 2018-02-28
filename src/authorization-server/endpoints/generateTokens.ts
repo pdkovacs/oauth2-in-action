@@ -70,7 +70,9 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + (5 * 60),
-        jti: randomstring.generate()
+        jti: randomstring.generate(),
+        authorities: user.authorities,
+        username: user.email
     };
 
     if (nonce) {
