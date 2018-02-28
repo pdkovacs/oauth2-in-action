@@ -10,9 +10,10 @@ export interface IUserInfo {
     username?: string;
     password?: string;
     authorities?: string[];
+    groups?: string[];
 }
 
-const userInfo: { [key: string]: IUserInfo } = {
+const userInfos: { [key: string]: IUserInfo } = {
     alice: {
         sub: "9XE3-JI34-00132A",
         preferred_username: "alice",
@@ -20,7 +21,10 @@ const userInfo: { [key: string]: IUserInfo } = {
         email: "alice.wonderland@example.com",
         email_verified: true,
         authorities: [
-            "ROLE_USER"
+            "ROLE_TEAM_ADMIN"
+        ],
+        groups: [
+            "admin"
         ]
     },
 
@@ -31,7 +35,10 @@ const userInfo: { [key: string]: IUserInfo } = {
         email: "bob.loblob@example.net",
         email_verified: false,
         authorities: [
-            "ROLE_USER"
+            "ROLE_TEAM_USER"
+        ],
+        groups: [
+            "user"
         ]
     },
 
@@ -42,12 +49,17 @@ const userInfo: { [key: string]: IUserInfo } = {
         email: "carol.lewis@example.net",
         email_verified: true,
         authorities: [
-            "ROLE_USER"
+            "ROLE_TEAM_USER"
+        ],
+        groups: [
+            "user"
         ]
     }
 };
 
-export const getUserInfo: (userId: string) => IUserInfo = userId => userInfo[userId];
+export const getUserInfos: () => { [key: string]: IUserInfo } = () => userInfos;
+
+export const getUserInfo: (userId: string) => IUserInfo = userId => userInfos[userId];
 
 // client information
 interface IClient {

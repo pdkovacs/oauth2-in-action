@@ -4,6 +4,8 @@ import { getClient, addAuthorizationRequest } from "../data";
 import logger from "../../logger";
 import { buildUrl } from "../../utils";
 
+import { getUserInfos } from "../data";
+
 import * as randomstring from "randomstring";
 
 import * as __ from "underscore";
@@ -35,7 +37,7 @@ export default (req: Request, res: Response) => {
 
         const reqid = addAuthorizationRequest(req.query);
 
-        res.render("approve", {client, reqid, scope: rscope});
+        res.render("approve", {client, reqid, scope: rscope, userInfos: getUserInfos()});
         return;
     }
 };
