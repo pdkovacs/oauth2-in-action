@@ -35,7 +35,7 @@ const userInfos: { [key: string]: IUserInfo } = {
         email: "bob.loblob@example.net",
         email_verified: false,
         authorities: [
-            "ROLE_TEAM_USER"
+            "ROLE_USER"
         ],
         groups: [
             "user"

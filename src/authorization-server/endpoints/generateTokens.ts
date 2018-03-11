@@ -6,27 +6,31 @@ import logger from "../../logger";
 // tslint:disable-next-line
 const jose = require("jsrsasign");
 
+const sendPublicKeyAsPEM: boolean = process.env.SEND_PUBLIC_KEY_AS === "PEM";
+
 /* tslint:disable */
-const privateRsaKey =  {
-    kty: 'RSA',
-    n: 'hriFh7nnhFjiVsoNt5C-aYOkD8OrnjsorNzTLrmUbbOSLFLJJD3Ws7Mw9Dd0UGlEr3gp8s4dsGD-A-KLXNGCeH2bo7H8UyRQkzw47FrEgV4KovuJs-0ccpfn765_gBLZ9y95aDpZh5TM8aF7HXGCiToYZwayZur8Bg1J9hUFj6MNuKJ4FKdJmirSi3GjuCgmjnRPjC3H0kJymapwlrDmBiChYzGd5Hlf6Kfp3iwFONOV6oa9VCig42bsxKkdhviN-MBuIvSAXNMFSBkMFRwuiTniWAGdLRXriZlOPq47TU3syYYZ9A0aBkjga6Y-0S87HbtKON-WVJPX_m96gEr1Cw',
-    e: 'AQAB',
-    d: 'ZlR6eOHozUqGgc3wJWK4f4USdTb3gLUG7Ga_slocOEeR3ED1r6WZE94kbRxCKWIMXgw0MM4HFxZVW7YUjWhGZiditTBYrP6EhZHU2xMG-Azqn2nY6uZMGW7xKcmt5yZqkatp2JWZs7Z_BXrW_UJfGMUcDAW2NR6AWEh3yYemNbdVawgd9yU-VH44DZeX0EpqF_EpPYjA4Y61RTUwQj6N2M7kdhbxufkB-1JR88XXeclZ5OPIZ7oU0jEZOG5ffh5RHs2ugtKnEhDBQiNtjUt7s77rusrFQxNEm0otl1PLIP6mj5jFMA-upcLDmeR7IQOuGQW2ZufL-iM_OMGjel8joQ',
-    p: 'yjS-TGj4EhTZ9ULSikQeMBHaZo4VKaWQHzUllmWqa7qZch9aXdG_Ey3ghHR7dMi3JO9uZNQ1hpGZKq58vR8Eao_TZBIJFAy9lW019laQsRHULa4gM5q8mgLPM2H7iywFAbTnhVaADTkJZpw6CHr6H_SXQoLsUZ3abhzSuayc800',
-    q: 'qo-w3NPiHw2yDqdkQrKfnyHZE3o1V6rmFlG5tgLJ9XQ2dZxw6baj24dEzti1tfCcXvhZwNYA_C6uFSR40SaHtw8pklKTH-5K3K3Ad2OJHo7a0Pr6KI8y6jqU_MJ76qttXxtzyjKEpK_dsnqHHPx25SjVSgbiSG1VKqCAkgdmrbc',
-    dp: 'BkHTkbG923FhvUEwGq847-vdgkbrSLqi1xRh8WF8AJFppipqNXUEIKfOxsqD930ujaoLFHusnFltD_EOUxvemx2QQQx9020BgNo8TT8ogxI2KqO0w2QKagmkN8bUbd4S2Zarg2jF1aLqM46qDREhJFQBSkGa5nuoArhJnQ1GXhE',
-    dq: 'U13Sg81o6-bEzlbRMayfSqe_s757DjOxLN2bWTR5xGieKdRieEnWQ3oVjsjr4FcQB3d6Xz_60Uh7vEfMaeZcVYSqvCNyWBwgKUcgGPrkzbPjjlvuJB8CMuyZYAYrjWNnHSKM8RrKLLjtMsyi9-8Kqi3QOtOsjNwr0Z8L2NSXQnc',
-    qi: 'aQIs-h62BSQLEtAw9PJQAKgb8wxh2Lq9gZS7avJB9mi03Y51OkDsPszxzvVr6hMhOcDV5uc-0it0ZSBJp2RcTMt_l1-V6Rnxm1TejL-yRKgZolzTFi-gT7XqiRPVqa9vir0CDwqbq-PL0uCEfxizJV9091v3j3dOIgoAZ0AMVd0'
-};
+const privateRsaKey =  { kty: 'RSA',
+n: 'nE4xn_P1_Zzhi6ovBAlfCP3u2sNyK0V48DmPL1YSqQHvzdXo0_44HDZ9vOPBXPAZ9OztCybGi_567QYQZsjIZvOvmror5Y3_XRe6NAEA_Xbsql59CZ2-oPCmQ9NQGVMzlA_-oUFxImAVntYcjBK-ewVUN03xpqy-ri9u1fnsGTVXDtdjP1x7IegTsd10EhrbLrxUlg-gobNVNPR-e5yv9k8PqtssVOR0AjdDxkTk3w860s4LW03kpeoNq88ZTG28OLYd5y3WFJ0J8eP8mnDWewpEntJmxlYmhNQZPGOuV2hZmi3mFxvKy1J6SmK0t0cQ49Gncqdcc-RqKUVHrVJkVw',
+e: 'AQAB',
+d: 'inpEQN_UmgH5WNFHoh3jUoYWrT3m0itUgA-eqWNqWM1cdVIEWnypnWUxdL2bPAmEFZgqUmziDnlA0ulCcq2DzqIqe7xg05lAGmvBDf2tsOFBv5bC1Fgq4U8THpgCKM2rrouVHaxq3Pefb_9lfzvEAh2whObLJs14ib2ARpaK87EHxnwZpb_XzaXs_7w51taWnxIGr6amqpjK1eKTswUlgwnqIu3hQPSjj45dvgKWvb15f4cQm8DrnblXKJQHN4xTVl3gJLzOWzIDK1l83OrpSrLgQnPUxAr6sw96oKmX0PDs0flYLhti31m3zM9_555FoIpevvKLnjmpTgEgeex2AQ',
+p: '3aQViu1OsQFK54h9zieVV8wlwYSxgQZrOE4pk15hoXCmbKUWDLI65EW1ykBrxSiTuHa8p_vpp54COEne6KUoUW8QiK2zzllkLAvTwZoKwmaTN9gXZDq44KTmxUD2EPjqaGGYIS0qNz4CojT-jMDcOMij1Nb3ndHeLv1S8JPTM4E',
+q: 'tIk9_ImRAXjwFjk5KKG-TfdZAdWMVonHsA5V-42SAF4-fMiE3WYFNNH8s-f-KCZ9YcxvbKePu3r--jCfMjdRXKGo8LyW93G2Wz4pqT6RWSU-ySugo2Xh78qqas_NxA1RScTfVqLoDqi5lhzRt_VL8ttcqvt7Nl8NuEbAf3Sno9c',
+dp: 'Ojkgb55nTZhJVQlGAyHi2W2HfY6eEobdI61kvpHMk9xD28aCRFONpOmrF7ZUmTZPl-WZKYfDmYSokKDXLcY1ES9b6Iu48DwLVIbG2dTdfrPzeHgLrQjACENJXAf0nADHkyQQEqcKr_haOMIzHEaNk10hrIfMBGldNHrXjttGYAE',
+dq: 'K8LwwZxfB-pW2Cw6zLyYMrH4Y1duUzPGschn0zg34dr2bqz0d-5Y6LrV9I4Rr43U6rXxdHcRgjKISAEtNbDvCfMtzl0IgyaPO4LP-nRuKxu6Im1u3Oy_Xa7UrFt-1z0bLTSJpqiKc7M2eUq3E05kgJPn3JJlBYL5Amg0FTEjybU',
+qi: 'accVhlQlH3BHbxNs-mgSLwQCDkxsIApvHm9cKBS8HK0XvQrB4FQttx97f6h0cSZVqesGJKIeE8swHVCcgQaYNHgTlJvuGfJVWlwXuR-rI-J0kBcWoBB-r-KcNTqh4YHdsmBIze0ET9U_MrZKfI6xh6tQ0VsnvpYszlCir0UHsV8' };
+
+const jwkPub2 = { kty: 'RSA',
+n: 'nE4xn_P1_Zzhi6ovBAlfCP3u2sNyK0V48DmPL1YSqQHvzdXo0_44HDZ9vOPBXPAZ9OztCybGi_567QYQZsjIZvOvmror5Y3_XRe6NAEA_Xbsql59CZ2-oPCmQ9NQGVMzlA_-oUFxImAVntYcjBK-ewVUN03xpqy-ri9u1fnsGTVXDtdjP1x7IegTsd10EhrbLrxUlg-gobNVNPR-e5yv9k8PqtssVOR0AjdDxkTk3w860s4LW03kpeoNq88ZTG28OLYd5y3WFJ0J8eP8mnDWewpEntJmxlYmhNQZPGOuV2hZmi3mFxvKy1J6SmK0t0cQ49Gncqdcc-RqKUVHrVJkVw',
+e: 'AQAB' };
 
 const publicRsaKeyPEM = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhriFh7nnhFjiVsoNt5C+
-aYOkD8OrnjsorNzTLrmUbbOSLFLJJD3Ws7Mw9Dd0UGlEr3gp8s4dsGD+A+KLXNGC
-eH2bo7H8UyRQkzw47FrEgV4KovuJs+0ccpfn765/gBLZ9y95aDpZh5TM8aF7HXGC
-iToYZwayZur8Bg1J9hUFj6MNuKJ4FKdJmirSi3GjuCgmjnRPjC3H0kJymapwlrDm
-BiChYzGd5Hlf6Kfp3iwFONOV6oa9VCig42bsxKkdhviN+MBuIvSAXNMFSBkMFRwu
-iTniWAGdLRXriZlOPq47TU3syYYZ9A0aBkjga6Y+0S87HbtKON+WVJPX/m96gEr1
-CwIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnE4xn/P1/Zzhi6ovBAlf
+CP3u2sNyK0V48DmPL1YSqQHvzdXo0/44HDZ9vOPBXPAZ9OztCybGi/567QYQZsjI
+ZvOvmror5Y3/XRe6NAEA/Xbsql59CZ2+oPCmQ9NQGVMzlA/+oUFxImAVntYcjBK+
+ewVUN03xpqy+ri9u1fnsGTVXDtdjP1x7IegTsd10EhrbLrxUlg+gobNVNPR+e5yv
+9k8PqtssVOR0AjdDxkTk3w860s4LW03kpeoNq88ZTG28OLYd5y3WFJ0J8eP8mnDW
+ewpEntJmxlYmhNQZPGOuV2hZmi3mFxvKy1J6SmK0t0cQ49Gncqdcc+RqKUVHrVJk
+VwIDAQAB
 -----END PUBLIC KEY-----`
 /* tslint:enable */
 
@@ -121,5 +125,11 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
 export default generateTokens;
 
 export const getPublickey = () => {
-    return publicRsaKeyPEM;
+    if (sendPublicKeyAsPEM) {
+        return {
+            value: publicRsaKeyPEM
+        };
+    } else {
+        return jwkPub2;
+    }
 };
