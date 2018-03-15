@@ -3,6 +3,8 @@ import * as randomstring from "randomstring";
 import nosql from "../store";
 import logger from "../../logger";
 
+import { publicAddress } from "../data";
+
 // tslint:disable-next-line
 const jose = require("jsrsasign");
 
@@ -69,7 +71,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
     const header = { typ: "JWT", alg: "RS256", kid: jose.KJUR.jws.JWS.getJWKthumbprint(privateRsaKey) };
 
     const accessTokenPayload: ITokenPayload = {
-        iss: "http://localhost:9001/",
+        iss: publicAddress,
         sub: user.sub,
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),
@@ -84,7 +86,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
     }
 
     const idTokenPayload: ITokenPayload = {
-        iss: "http://localhost:9001",
+        iss: publicAddress,
         sub: user.sub,
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),

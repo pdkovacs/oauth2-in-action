@@ -1,6 +1,8 @@
 import { request } from "https";
 import * as randomstring from "randomstring";
 
+export const publicAddress = "http://id-server.test:8080";
+
 export interface IUserInfo {
     sub: string;
     preferred_username: string;
