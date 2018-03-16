@@ -31,6 +31,11 @@ const authServer = {
     tokenEndpoint: "http://localhost:9001/token"
 };
 
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    logger.info("Interceptor", req.url);
+    next();
+});
+
 app.get("/", (req: express.Request, res: express.Response) => {
     res.render("index", {clients: getClients(), authServer});
 });
@@ -40,8 +45,8 @@ app.post("/approve", approveEndpoint);
 app.post("/token", tokenEndpoint);
 app.get("/publickey", publickeyEndpoint);
 app.get("/logout", (req: express.Request, res: express.Response) => {
-    logger.log("info", "Place holder /logout end-point");
-    logger.log("info", "Request to redirect to %s after logging user back is noted", req.query.service);
+    const log = logger.createChild("/logout place-holder");
+    log.info("Request to redirect to %s after logging user back is noted", req.query.service);
     res.end();
 });
 
@@ -57,7 +62,7 @@ app.use("/", express.static("files/authorizationServer"));
 // clear the database
 nosql.clear();
 
-const server = app.listen(9001, "localhost", () => {
+const server = app.listen(9001, "0.0.0.0", () => {
   const host = server.address().address;
   const port = server.address().port;
 
