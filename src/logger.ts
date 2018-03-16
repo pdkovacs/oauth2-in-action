@@ -19,7 +19,7 @@ type CreateChildContext = (context: string) => winston.LoggerInstance;
 
 const contextPrefix = (context: string) => context ? context + ": " : "";
 
-class ContextAwareLogger {
+export class ContextAwareLogger {
     private context: string;
 
     constructor(context: string) {
@@ -31,27 +31,27 @@ class ContextAwareLogger {
     }
 
     public error(msg: string, ...meta: any[]) {
-        baseLogger.error(contextPrefix(this.context) + msg, meta);
+        baseLogger.error(util.format(contextPrefix(this.context) + msg, ...meta));
     }
 
     public warn(msg: string, ...meta: any[]) {
-        baseLogger.warn(contextPrefix(this.context) + msg, meta);
+        baseLogger.warn(util.format(contextPrefix(this.context) + msg, ...meta));
     }
 
     public info(msg: string, ...meta: any[]) {
-        baseLogger.info(contextPrefix(this.context) + msg, meta);
+        baseLogger.info(util.format(contextPrefix(this.context) + msg, ...meta));
     }
 
     public debug(msg: string, ...meta: any[]) {
-        baseLogger.debug(contextPrefix(this.context) + msg, meta);
+        baseLogger.debug(util.format(contextPrefix(this.context) + msg, ...meta));
     }
 
     public verbose(msg: string, ...meta: any[]) {
-        baseLogger.verbose(contextPrefix(this.context) + msg, meta);
+        baseLogger.verbose(util.format(contextPrefix(this.context) + msg, ...meta));
     }
 
     public silly(msg: string, ...meta: any[]) {
-        baseLogger.silly(contextPrefix(this.context) + msg, meta);
+        baseLogger.silly(util.format(contextPrefix(this.context) + msg, ...meta));
     }
 
     public isLevelEnabled(level: string) {
