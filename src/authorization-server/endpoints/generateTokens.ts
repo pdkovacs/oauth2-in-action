@@ -8,7 +8,7 @@ import { publicAddress } from "../data";
 // tslint:disable-next-line
 const jose = require("jsrsasign");
 
-const sendPublicKeyAsPEM: boolean = process.env.SEND_PUBLIC_KEY_AS === "PEM";
+const sendPublicKeyAsJWK: boolean = process.env.SEND_PUBLIC_KEY_AS === "JWK";
 
 /* tslint:disable */
 const privateRsaKey =  { kty: 'RSA',
@@ -130,11 +130,11 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
 export default generateTokens;
 
 export const getPublickey = () => {
-    if (sendPublicKeyAsPEM) {
+    if (sendPublicKeyAsJWK) {
+        return jwkPub2;
+    } else {
         return {
             value: publicRsaKeyPEM
         };
-    } else {
-        return jwkPub2;
     }
 };
