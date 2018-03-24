@@ -3,6 +3,7 @@ import { getPublickey } from "./generateTokens";
 import logger from "../../logger";
 
 export default (req: Request, res: Response) => {
-    logger.log("info", "Public key served");
-    res.send(getPublickey());
+    const publicKey: any = getPublickey();
+    logger.createChild("getPublicKey").info("Public key is being served: %o", publicKey);
+    res.send(publicKey);
 };

@@ -27,7 +27,7 @@ export class ContextAwareLogger {
     }
 
     public log(level: string, msg: string, ...meta: any[]) {
-        (this as any)[level](util.format(meta));
+        (this as any)[level](util.format(msg, meta));
     }
 
     public error(msg: string, ...meta: any[]) {

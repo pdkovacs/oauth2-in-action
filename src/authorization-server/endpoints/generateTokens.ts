@@ -62,6 +62,9 @@ const packUpTokenPayload = (header: any, payload: ITokenPayload) => {
 
 const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
                         nonce?: string, generateRefreshToken?: boolean) => {
+
+    const ctxLogger = logger.createChild("generateTokens");
+
     let refreshToken = null;
 
     if (generateRefreshToken) {
@@ -107,12 +110,12 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
         nosql.insert({ refresh_token: refreshToken, client_id: clientId, scope, user });
     }
 
-    logger.log("info", "Issuing access token %s", accessToken);
+    ctxLogger.info("Issuing access token %s", accessToken);
     if (refreshToken) {
-        logger.log("info", "and refresh token %s", refreshToken);
+        ctxLogger.info("and refresh token %s", refreshToken);
     }
-    logger.log("info", "with scope %s", accessToken, scope);
-    logger.log("info", "Iussing ID token %s", idToken);
+    ctxLogger.info("with scope %s", accessToken, scope);
+    ctxLogger.info("Iussing ID token %s", idToken);
 
     let cscope = null;
     if (scope) {

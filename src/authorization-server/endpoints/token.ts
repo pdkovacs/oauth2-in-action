@@ -14,6 +14,8 @@ export default (req: Request, res: Response) => {
     let clientId: string;
     let clientSecret: string;
 
+    const ctxLogger = logger.createChild("tokenEndpoint");
+
     const auth = req.headers.authorization as string;
     if (auth) {
         // check the auth header
@@ -26,7 +28,7 @@ export default (req: Request, res: Response) => {
     if (req.body.client_id) {
         if (clientId) {
             // if we"ve already seen the client"s credentials in the authorization header, this is an error
-            logger.log("error", "Client attempted to authenticate with multiple methods");
+            ctxLogger.error("Client attempted to authenticate with multiple methods");
             res.status(401).json({error: "invalid_client"});
             return;
         }
@@ -37,13 +39,13 @@ export default (req: Request, res: Response) => {
 
     const client = getClient(clientId);
     if (!client) {
-        logger.log("error", "Unknown client %s", clientId);
+        ctxLogger.error("Unknown client %s", clientId);
         res.status(401).json({error: "invalid_client"});
         return;
     }
 
     if (client.client_secret !== clientSecret) {
-        logger.log("error", "Mismatched client secret, expected %s got %s", client.client_secret, clientSecret);
+        ctxLogger.error("Mismatched client secret, expected %s got %s", client.client_secret, clientSecret);
         res.status(401).json({error: "invalid_client"});
         return;
     }
@@ -56,27 +58,27 @@ export default (req: Request, res: Response) => {
             if (code.request.client_id === clientId) {
                 const username = code.user;
                 const userInfo = getUserInfo(username);
-                logger.log("info", "username: %s, userInfo: %s", username, JSON.stringify(userInfo));
+                ctxLogger.info("username: %s, userInfo: %s", username, JSON.stringify(userInfo));
                 const scope = req.body.scope;
                 const tokenResponse = generateTokens(clientId, userInfo, scope);
                 res.status(200).json(tokenResponse);
 
                 // const accessToken = randomstring.generate();
                 // nosql.insert({ access_token: accessToken, client_id: clientId, scope: code.scope });
-                // logger.log("info", "Issuing access token %s, with scope %s", accessToken, code.scope);
+                // ctxLogger.info("Issuing access token %s, with scope %s", accessToken, code.scope);
                 // const cscope = code.scope ? code.scope.join(" ") : null;
                 // const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: cscope };
                 // res.status(200).json(tokenResponse);
 
-                logger.log("info", "Issued tokens for code %s", req.body.code, tokenResponse);
+                ctxLogger.info("Issued tokens for code %s", req.body.code, tokenResponse);
                 return;
             } else {
-                logger.log("error", "Client mismatch, expected %s got %s", code.request.client_id, clientId);
+                ctxLogger.error("Client mismatch, expected %s got %s", code.request.client_id, clientId);
                 res.status(400).json({error: "invalid_grant"});
                 return;
             }
         } else {
-            logger.log("error", "Unknown code, %s", req.body.code);
+            ctxLogger.error("Unknown code, %s", req.body.code);
             res.status(400).json({error: "invalid_grant"});
             return;
         }
@@ -93,7 +95,7 @@ export default (req: Request, res: Response) => {
         const accessToken = randomstring.generate();
         const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: scope.join(" ") };
         nosql.insert({ access_token: accessToken, client_id: clientId, scope });
-        logger.log("info", "Issuing access token %s", accessToken);
+        ctxLogger.info("Issuing access token %s", accessToken);
         res.status(200).json(tokenResponse);
         return;
 
@@ -104,24 +106,24 @@ export default (req: Request, res: Response) => {
             if (tokens.length === 1) {
                 const token = tokens[0];
                 if (token.client_id !== clientId) {
-                    logger.log("error", "Invalid client using a refresh token, expected %s got %s",
+                    ctxLogger.error("Invalid client using a refresh token, expected %s got %s",
                                token.client_id, clientId);
                     // tslint:disable-next-line:no-empty
                     nosql.remove((found: any) => (found === token), () => {} );
                     res.status(400).end();
                     return;
                 }
-                logger.log("info", "We found a matching token: %s", req.body.refresh_token);
+                ctxLogger.info("We found a matching token: %s", req.body.refresh_token);
                 const accessToken = randomstring.generate();
                 const tokenResponse = { access_token: accessToken, token_type: "Bearer",
                                          refresh_token: req.body.refresh_token };
                 nosql.insert({ access_token: accessToken, client_id: clientId });
-                logger.log("info", "Issuing access token %s for refresh token %s",
+                ctxLogger.info("Issuing access token %s for refresh token %s",
                             accessToken, req.body.refresh_token);
                 res.status(200).json(tokenResponse);
                 return;
             } else {
-                logger.log("error", "No matching token was found.");
+                ctxLogger.error("No matching token was found.");
                 res.status(401).end();
             }
         });
@@ -129,15 +131,15 @@ export default (req: Request, res: Response) => {
         const username = req.body.username;
         const userInfo = getUserInfo(username);
         if (!userInfo) {
-            logger.log("error", "Unknown user %s", userInfo);
+            ctxLogger.error("Unknown user %s", userInfo);
             res.status(401).json({error: "invalid_grant"});
             return;
         }
-        logger.log("info", "user is %j ", userInfo);
+        ctxLogger.info("user is %j ", userInfo);
 
         const password = req.body.password;
         if (userInfo.password !== password) {
-            logger.log("error", "Mismatched resource owner password, expected %s got %s", userInfo.password, password);
+            ctxLogger.error("Mismatched resource owner password, expected %s got %s", userInfo.password, password);
             res.status(401).json({error: "invalid_grant"});
             return;
         }
@@ -147,7 +149,7 @@ export default (req: Request, res: Response) => {
         res.status(200).json(tokenResponse);
         return;
     } else {
-        logger.log("error", "Unknown grant type %s", req.body.grant_type);
+        ctxLogger.error("Unknown grant type %s", req.body.grant_type);
         res.status(400).json({error: "unsupported_grant_type"});
     }
 };
