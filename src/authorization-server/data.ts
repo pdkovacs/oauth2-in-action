@@ -17,7 +17,7 @@ export interface IUserInfo {
 
 const userInfos: { [key: string]: IUserInfo } = {
     alice: {
-        sub: "9XE3-JI34-00132A",
+        sub: "alice.wonderland@example.com",
         preferred_username: "alice",
         name: "Alice",
         email: "alice.wonderland@example.com",
@@ -31,7 +31,7 @@ const userInfos: { [key: string]: IUserInfo } = {
     },
 
     bob: {
-        sub: "1ZT5-OE63-57383B",
+        sub: "bob.loblob@example.net",
         preferred_username: "bob",
         name: "Bob",
         email: "bob.loblob@example.net",
@@ -45,7 +45,7 @@ const userInfos: { [key: string]: IUserInfo } = {
     },
 
     carol: {
-        sub: "F5Q1-L6LGG-959FS",
+        sub: "carol.lewis@example.net",
         preferred_username: "carol",
         name: "Carol",
         email: "carol.lewis@example.net",

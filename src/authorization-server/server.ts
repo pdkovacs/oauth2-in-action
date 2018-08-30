@@ -31,8 +31,8 @@ app.set("json spaces", 4);
 
 // authorization server information
 const authServer = {
-    authorizationEndpoint: "http://localhost:${applicationPort}/authorize",
-    tokenEndpoint: "http://localhost:${applicationPort}/token"
+    authorizationEndpoint: "http://localhost:9001/oauth/authorize",
+    tokenEndpoint: "http://localhost:9001/oauth/token"
 };
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
