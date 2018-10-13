@@ -15,6 +15,8 @@ import logger from "../logger";
 // tslint:disable-next-line
 const base64url = require("base64url");
 
+const applicationPort = 9001; // Docker image assumes this port
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -27,8 +29,8 @@ app.set("json spaces", 4);
 
 // authorization server information
 const authServer = {
-    authorizationEndpoint: "http://localhost:9001/authorize",
-    tokenEndpoint: "http://localhost:9001/token"
+    authorizationEndpoint: "http://localhost:${applicationPort}/authorize",
+    tokenEndpoint: "http://localhost:${applicationPort}/token"
 };
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -62,9 +64,9 @@ app.use("/", express.static("files/authorizationServer"));
 // clear the database
 nosql.clear();
 
-const server = app.listen(9001, "0.0.0.0", () => {
+const server = app.listen(applicationPort, "0.0.0.0", () => {
   const host = server.address().address;
   const port = server.address().port;
 
-  logger.log("info", "OAuth Authorization Server is listening at http://%s:%s", host, port);
+  logger.info("Open ID Connect provider is listening at http://%s:%d", host, port);
 });
