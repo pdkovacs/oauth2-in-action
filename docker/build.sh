@@ -5,7 +5,7 @@ set -x
 repo_root="$(dirname $0)/.."
 cd "$repo_root"
 
-tsc
+npm run build
 rm -rf ./docker/build ./docker/dist
 mkdir ./docker/dist
 cp -r ./build/* ./docker/dist/

@@ -1,8 +1,9 @@
+import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as cons from "consolidate";
 import * as express from "express";
 
-import { getClients } from "./data";
+import { serverPort, getClients } from "./data";
 
 import authorizationEndpoint from "./endpoints/authorization";
 import approveEndpoint from "./endpoints/approve";
@@ -15,8 +16,6 @@ import logger from "../logger";
 // tslint:disable-next-line
 const base64url = require("base64url");
 
-const applicationPort = 9001; // Docker image assumes this port
-
 const app = express();
 
 app.use(bodyParser.json());
@@ -24,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support form-encoded bodi
 
 app.engine("html", cons.underscore);
 app.set("view engine", "html");
-app.set("views", "src/authorization-server/views");
+app.set("views", path.join(__dirname, "views"));
 app.set("json spaces", 4);
 
 // authorization server information
@@ -59,12 +58,12 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
 //     res.send(200);
 // });
 
-app.use("/", express.static("files/authorizationServer"));
+// app.use("/", express.static("files/authorizationServer"));
 
 // clear the database
 nosql.clear();
 
-const server = app.listen(applicationPort, "0.0.0.0", () => {
+const server = app.listen(serverPort, "0.0.0.0", () => {
   const host = server.address().address;
   const port = server.address().port;
 

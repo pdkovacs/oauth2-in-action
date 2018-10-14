@@ -1,5 +1,4 @@
 import * as url from "url";
-import * as randomstring from "randomstring";
 import * as __ from "underscore";
 
 export const buildUrl = (base: string, options: { [key: string]: string }, hash?: string) => {

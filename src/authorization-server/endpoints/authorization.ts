@@ -6,8 +6,6 @@ import { buildUrl } from "../../utils";
 
 import { getUserInfos } from "../data";
 
-import * as randomstring from "randomstring";
-
 import * as __ from "underscore";
 
 export default (req: Request, res: Response) => {
