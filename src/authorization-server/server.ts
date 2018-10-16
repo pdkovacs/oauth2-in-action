@@ -45,7 +45,7 @@ app.get("/authorize", authorizationEndpoint);
 app.post("/approve", approveEndpoint);
 app.post("/token", tokenEndpoint);
 app.get("/publickey", publickeyEndpoint);
-app.get("/logout", (req: express.Request, res: express.Response) => {
+app.post("/logout", (req: express.Request, res: express.Response) => {
     const log = logger.createChild("/logout place-holder");
     log.info("Request to redirect to %s after logging user back is noted", req.query.service);
     res.end();
