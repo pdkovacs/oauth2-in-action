@@ -12,7 +12,7 @@ cp -r ./build/* ./docker/dist/
 cp ./package.json ./docker/dist/
 cp ./package-lock.json ./docker/dist/
 
-docker build -t oidc-mock docker/.
+docker build -t nightmanager/fake-oidc-server docker/.
 
 cd -
 
