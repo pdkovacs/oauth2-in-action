@@ -3,3 +3,4 @@
 database.nosql
 /node_modules/
 /build/
+/docker/dist

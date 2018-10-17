@@ -5,7 +5,6 @@ import logger from "../../logger";
 import { buildUrl } from "../../utils";
 import generateTokens from "./generateTokens";
 
-import * as randomstring from "randomstring";
 import * as qs from "qs";
 
 import * as __ from "underscore";

@@ -1,8 +1,9 @@
+import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as cons from "consolidate";
 import * as express from "express";
 
-import { getClients } from "./data";
+import { serverPort, getClients } from "./data";
 
 import authorizationEndpoint from "./endpoints/authorization";
 import approveEndpoint from "./endpoints/approve";
@@ -22,13 +23,13 @@ app.use(bodyParser.urlencoded({ extended: true })); // support form-encoded bodi
 
 app.engine("html", cons.underscore);
 app.set("view engine", "html");
-app.set("views", "src/authorization-server/views");
+app.set("views", path.join(__dirname, "views"));
 app.set("json spaces", 4);
 
 // authorization server information
 const authServer = {
-    authorizationEndpoint: "http://localhost:9001/authorize",
-    tokenEndpoint: "http://localhost:9001/token"
+    authorizationEndpoint: "http://localhost:${applicationPort}/authorize",
+    tokenEndpoint: "http://localhost:${applicationPort}/token"
 };
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -44,7 +45,7 @@ app.get("/authorize", authorizationEndpoint);
 app.post("/approve", approveEndpoint);
 app.post("/token", tokenEndpoint);
 app.get("/publickey", publickeyEndpoint);
-app.get("/logout", (req: express.Request, res: express.Response) => {
+app.post("/logout", (req: express.Request, res: express.Response) => {
     const log = logger.createChild("/logout place-holder");
     log.info("Request to redirect to %s after logging user back is noted", req.query.service);
     res.end();
@@ -57,14 +58,14 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
 //     res.send(200);
 // });
 
-app.use("/", express.static("files/authorizationServer"));
+// app.use("/", express.static("files/authorizationServer"));
 
 // clear the database
 nosql.clear();
 
-const server = app.listen(9001, "0.0.0.0", () => {
+const server = app.listen(serverPort, "0.0.0.0", () => {
   const host = server.address().address;
   const port = server.address().port;
 
-  logger.log("info", "OAuth Authorization Server is listening at http://%s:%s", host, port);
+  logger.info("Open ID Connect provider is listening at http://%s:%d", host, port);
 });

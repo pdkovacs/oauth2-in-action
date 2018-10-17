@@ -1,7 +1,7 @@
-import { request } from "https";
 import * as randomstring from "randomstring";
 
-export const publicAddress = "http://id-server.test:8080";
+export const serverPort = 9001;
+export const publicAddress = `http://id-server.test:${serverPort}`;
 
 export interface IUserInfo {
     sub: string;
@@ -75,7 +75,7 @@ const clients: IClient[] = [
     {
         client_id: "oauth-client-1",
         client_secret: "oauth-client-secret-1",
-        redirect_uris: ["http://dev.test/icons/login"],
+        redirect_uris: ["http://design.test/icons/login"],
         scope: "foo bar"
     },
     {

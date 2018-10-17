@@ -36,7 +36,8 @@
     "typescript": "^2.4.2"
   },
   "scripts": {
-    "dev:authrzn": "concurrently --kill-others \"tsc --watch\" \"nodemon --watch build build/authorization-server/authorizationServer.js\""
+    "build": "tsc && cp -a src/authorization-server/views build/authorization-server/",
+    "dev:authrzn": "npm run build && concurrently --kill-others \"tsc --watch\" \"nodemon --watch build build/authorization-server/server.js\""
   },
   "author": "peter.dunay.kovacs@gmail.com",
   "license": "Apache-2.0"
