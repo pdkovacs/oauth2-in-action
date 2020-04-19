@@ -1,3 +1,4 @@
+import * as net from "net";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as cons from "consolidate";
@@ -64,8 +65,8 @@ app.post("/logout", (req: express.Request, res: express.Response) => {
 nosql.clear();
 
 const server = app.listen(serverPort, "0.0.0.0", () => {
-  const host = server.address().address;
-  const port = server.address().port;
+  const host = (server.address() as net.AddressInfo).address;
+  const port = (server.address() as net.AddressInfo).port;
 
   logger.info("Open ID Connect provider is listening at http://%s:%d", host, port);
 });

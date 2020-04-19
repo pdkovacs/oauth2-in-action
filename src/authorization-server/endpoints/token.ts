@@ -84,7 +84,7 @@ export default (req: Request, res: Response) => {
         }
     } else if (req.body.grant_type === "client_credentials") {
         const scope = req.body.scope ? req.body.scope.split(" ") : undefined;
-        const client1 = getClient(req.query.client_id); // FIXME: client1 -> client | FIXME (?req?).query
+        const client1 = getClient(req.query.client_id as string); // FIXME: client1 -> client | FIXME (?req?).query
         const cscope = client1.scope ? client1.scope.split(" ") : undefined;
         if (__.difference(scope, cscope).length > 0) {
             // client asked for a scope it couldn"t have
