@@ -95,7 +95,7 @@ const clients: IClient[] = [
 export const getClient = (clientId: string) => clients.find(client => client.client_id === clientId);
 export const getClients = () => clients;
 
-interface IAuthorizationRequest {
+export interface IAuthorizationRequest {
     response_type: string;
     scope: string;
     client_id: string;
