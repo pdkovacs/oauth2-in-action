@@ -50,10 +50,12 @@ interface ITokenPayload {
     iss: string;
     sub: string;
     aud: string;
+    azp: string;
     iat: number;
     exp: number;
     jti: string;
     authorities?: string[];
+    group?: string[];
     username?: string;
     nonce?: string;
 }
@@ -82,10 +84,12 @@ const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, s
         iss: publicAddress(serverSpec),
         sub: user.sub,
         aud: clientId,
+        azp: clientId,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + (5 * 60),
         jti: randomstring.generate(),
         authorities: user.authorities,
+        group: user.groups,
         username: user.email
     };
 
@@ -97,10 +101,12 @@ const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, s
         iss: publicAddress(serverSpec),
         sub: user.sub,
         aud: clientId,
+        azp: clientId,
         iat: Math.floor(Date.now() / 1000),
         exp:  Math.floor(Date.now() / 1000) + (5 * 60),
         jti: randomstring.generate(),
         authorities: user.authorities,
+        group: user.groups,
         username: user.email
     };
 
