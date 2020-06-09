@@ -11,6 +11,7 @@ import authorizationEndpoint from "./endpoints/authorization";
 import approveEndpoint from "./endpoints/approve";
 import tokenEndpoint from "./endpoints/token";
 import publickeyEndpoint from "./endpoints/publickey";
+import { getGroups as getGroupsEndpoint  } from "./endpoints/api";
 
 import nosql from "./store";
 import logger from "../logger";
@@ -52,6 +53,7 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
     log.info("Request to redirect to %s after logging user back is noted", req.query.service);
     res.end();
 });
+app.get("/api/groups", getGroupsEndpoint);
 
 // app.options("/*", (req, res, next) => {
 //     res.header("Access-Control-Allow-Origin", "*");
