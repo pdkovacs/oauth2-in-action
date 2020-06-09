@@ -83,11 +83,13 @@ export default (req: Request, res: Response) => {
             return;
         }
     } else if (req.body.grant_type === "client_credentials") {
+        ctxLogger.info("request of type client_credentials: %o", req.body);
         const scope = req.body.scope ? req.body.scope.split(" ") : undefined;
-        const client1 = getClient(req.query.client_id as string); // FIXME: client1 -> client | FIXME (?req?).query
+        const client1 = getClient(clientId); // FIXME: client1 -> client | FIXME (?req?).query
         const cscope = client1.scope ? client1.scope.split(" ") : undefined;
         if (__.difference(scope, cscope).length > 0) {
             // client asked for a scope it couldn"t have
+            ctxLogger.info("Invalid scope. Valid: %o, requested: %o", cscope, req.body.scope);
             res.status(400).json({error: "invalid_scope"});
             return;
         }
