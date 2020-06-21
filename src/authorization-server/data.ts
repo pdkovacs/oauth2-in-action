@@ -26,7 +26,7 @@ const userInfos: { [key: string]: IUserInfo } = {
             "ROLE_TEAM_ADMIN"
         ],
         groups: [
-            "vip"
+            "VIP"
         ]
     },
 
@@ -40,8 +40,8 @@ const userInfos: { [key: string]: IUserInfo } = {
             "ROLE_USER"
         ],
         groups: [
-            "user",
-            "external"
+            "USER",
+            "EXTERNAL"
         ]
     },
 
@@ -55,7 +55,7 @@ const userInfos: { [key: string]: IUserInfo } = {
             "ROLE_TEAM_USER"
         ],
         groups: [
-            "external"
+            "EXTERNAL"
         ]
     }
 };
