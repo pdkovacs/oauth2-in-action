@@ -38,3 +38,9 @@ export const getGroups = (req: Request, res: Response) => {
     console.log("getGroups headers", req.headers);
     res.json([group1, group2]);
 };
+
+export const getProjects = (req: Request, res: Response) => {
+    res.writeHead(200);
+    res.write("[]");
+    res.end();
+};
