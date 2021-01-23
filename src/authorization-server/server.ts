@@ -11,7 +11,7 @@ import authorizationEndpoint from "./endpoints/authorization";
 import approveEndpoint from "./endpoints/approve";
 import tokenEndpoint from "./endpoints/token";
 import publickeyEndpoint from "./endpoints/publickey";
-import { getGroups as getGroupsEndpoint  } from "./endpoints/api";
+import { getGroups as getGroupsEndpoint, getProjects  } from "./endpoints/api";
 
 import nosql from "./store";
 import logger from "../logger";
@@ -54,6 +54,7 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
     res.end();
 });
 app.get("/api/groups", getGroupsEndpoint);
+app.get("/api/projects", getProjects); 
 
 // app.options("/*", (req, res, next) => {
 //     res.header("Access-Control-Allow-Origin", "*");
