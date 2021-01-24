@@ -29,9 +29,10 @@
     "@types/underscore": "^1.8.5",
     "@types/underscore.string": "0.0.32",
     "@types/winston": "^2.3.0",
+    "@typescript-eslint/parser": "^4.14.0",
     "concurrently": "^5.2.0",
+    "eslint": "^7.18.0",
     "nodemon": "^2.0.0",
-    "tslint": "^5.6.0",
     "typescript": "^2.4.2"
   },
   "scripts": {
