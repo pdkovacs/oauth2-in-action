@@ -14,6 +14,7 @@ import publickeyEndpoint from "./endpoints/publickey";
 
 import nosql from "./store";
 import logger from "../logger";
+import { wellKnown } from "./endpoints/well-known";
 
 // tslint:disable-next-line
 const base64url = require("base64url");
@@ -78,6 +79,7 @@ const server = app.listen(serverPort, listenAddress, () => {
   const host = (server.address() as net.AddressInfo).address;
   const port = (server.address() as net.AddressInfo).port;
   const serverSpec = `${host}:${port}`;
+  app.get("/oidc/.well-known/openid-configuration", wellKnown(serverSpec));
   app.post("/approve", approveEndpoint(serverSpec));
   app.post("/oauth/token", tokenEndpoint(serverSpec));
     
