@@ -9,7 +9,7 @@ import logger from "../../logger";
 import nosql from "../store";
 import generateTokens from "./generateTokens";
 
-export default (req: Request, res: Response) => {
+export default (serverSpec: string) => (req: Request, res: Response) => {
     let clientCredentials: string[];
     let clientId: string;
     let clientSecret: string;
@@ -60,7 +60,7 @@ export default (req: Request, res: Response) => {
                 const userInfo = getUserInfo(username);
                 ctxLogger.info("username: %s, userInfo: %s", username, JSON.stringify(userInfo));
                 const scope = req.body.scope;
-                const tokenResponse = generateTokens(clientId, userInfo, scope);
+                const tokenResponse = generateTokens(serverSpec, clientId, userInfo, scope);
                 res.status(200).json(tokenResponse);
 
                 // const accessToken = randomstring.generate();
@@ -147,7 +147,7 @@ export default (req: Request, res: Response) => {
         }
 
         const scope = req.body.scope;
-        const tokenResponse = generateTokens(clientId, userInfo, scope);
+        const tokenResponse = generateTokens(serverSpec, clientId, userInfo, scope);
         res.status(200).json(tokenResponse);
         return;
     } else {

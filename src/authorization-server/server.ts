@@ -1,4 +1,5 @@
 import * as net from "net";
+import * as os from "os";
 import * as path from "path";
 import * as bodyParser from "body-parser";
 import * as cons from "consolidate";
@@ -43,10 +44,9 @@ app.get("/", (req: express.Request, res: express.Response) => {
 });
 
 app.get("/authorize", authorizationEndpoint);
-app.post("/approve", approveEndpoint);
-app.post("/token", tokenEndpoint);
-app.get("/publickey", publickeyEndpoint);
-app.post("/logout", (req: express.Request, res: express.Response) => {
+app.get("/oauth/authorize", authorizationEndpoint);
+app.get("/jwks", publickeyEndpoint);
+app.get("/logout", (req: express.Request, res: express.Response) => {
     const log = logger.createChild("/logout place-holder");
     log.info("Request to redirect to %s after logging user back is noted", req.query.service);
     res.end();
@@ -64,9 +64,22 @@ app.post("/logout", (req: express.Request, res: express.Response) => {
 // clear the database
 nosql.clear();
 
-const server = app.listen(serverPort, "0.0.0.0", () => {
+let listenAddress;
+const networkInterfaces = os.networkInterfaces();
+for (const netif of Object.keys(networkInterfaces)) {
+    for (const ni of networkInterfaces[netif]) {
+        if (ni.address.startsWith("192.")) {
+            listenAddress = ni.address;
+        }
+    }
+}
+
+const server = app.listen(serverPort, listenAddress, () => {
   const host = (server.address() as net.AddressInfo).address;
   const port = (server.address() as net.AddressInfo).port;
-
+  const serverSpec = `${host}:${port}`;
+  app.post("/approve", approveEndpoint(serverSpec));
+  app.post("/oauth/token", tokenEndpoint(serverSpec));
+    
   logger.info("Open ID Connect provider is listening at http://%s:%d", host, port);
 });

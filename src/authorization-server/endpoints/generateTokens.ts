@@ -60,7 +60,7 @@ const packUpTokenPayload = (header: any, payload: ITokenPayload) => {
     return jose.jws.JWS.sign("RS256", stringHeader, stringPayload, privateKey);
 };
 
-const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
+const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, scope: string[],
                         nonce?: string, generateRefreshToken?: boolean) => {
 
     const ctxLogger = logger.createChild("generateTokens");
@@ -74,7 +74,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
     const header = { typ: "JWT", alg: "RS256", kid: jose.KJUR.jws.JWS.getJWKthumbprint(privateRsaKey) };
 
     const accessTokenPayload: ITokenPayload = {
-        iss: publicAddress,
+        iss: publicAddress(serverSpec),
         sub: user.sub,
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),
@@ -89,7 +89,7 @@ const generateTokens = (clientId: string, user: IUserInfo, scope: string[],
     }
 
     const idTokenPayload: ITokenPayload = {
-        iss: publicAddress,
+        iss: publicAddress(serverSpec),
         sub: user.sub,
         aud: clientId,
         iat: Math.floor(Date.now() / 1000),

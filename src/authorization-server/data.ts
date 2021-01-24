@@ -1,7 +1,7 @@
 import * as randomstring from "randomstring";
 
 export const serverPort = 9001;
-export const publicAddress = `http://id-server.test:${serverPort}`;
+export const publicAddress = (serverSpec: string) => process.env.PUBLIC_ADDRESS || `http://${serverSpec}`;
 
 export interface IUserInfo {
     sub: string;
@@ -83,6 +83,12 @@ const clients: IClient[] = [
         client_secret: "oauth-client-secret-2",
         redirect_uris: ["http://localhost:8080/oauth2-login"],
         scope: "bar"
+    },
+    {
+        client_id: "marvin-live",
+        client_secret: "Design Hub",
+        redirect_uris: ["http://192.168.68.112:8888/domains/synergy/callback"],
+        scope: "bar openid read"
     },
     {
         client_id: "native-client-1",

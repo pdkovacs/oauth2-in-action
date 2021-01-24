@@ -10,7 +10,7 @@ import * as qs from "qs";
 import * as __ from "underscore";
 import * as __string from "underscore.string";
 
-export default (req: Request, res: Response) => {
+export default (serverSpec: string) => (req: Request, res: Response) => {
 
     const reqid = req.body.reqid;
     const query = getAuthorizationRequest(reqid);
@@ -26,7 +26,7 @@ export default (req: Request, res: Response) => {
             // user approved access
             const user = req.body.user;
             // save the code and request for later
-            const code = addAuthorizationCode(query, [], user, query.client_id);
+            const code = addAuthorizationCode(query, ["openid"], user, query.client_id);
             const urlParsed = buildUrl(query.redirect_uri, {
                 code,
                 state: query.state
@@ -58,7 +58,7 @@ export default (req: Request, res: Response) => {
 
             logger.log("info", "User %j", user);
 
-            const tokenResponse = generateTokens(query.client_id, userInfo, cscope);
+            const tokenResponse = generateTokens(serverSpec, query.client_id, userInfo, cscope);
 
             const params = query.state ? {state: query.state} : {};
             const urlParsed = buildUrl(query.redirect_uri, params, qs.stringify(tokenResponse));
