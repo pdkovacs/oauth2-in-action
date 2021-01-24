@@ -95,7 +95,7 @@ export default (serverSpec: string) => (req: Request, res: Response) => {
         }
 
         const accessToken = randomstring.generate();
-        const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: scope.join(" ") };
+        const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: scope ? scope.join(" ") : "" };
         nosql.insert({ access_token: accessToken, client_id: clientId, scope });
         ctxLogger.info("Issuing access token %s", accessToken);
         res.status(200).json(tokenResponse);
