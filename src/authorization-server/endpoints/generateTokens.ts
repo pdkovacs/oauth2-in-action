@@ -8,7 +8,7 @@ import { publicAddress } from "../data";
 // tslint:disable-next-line
 const jose = require("jsrsasign");
 
-const sendPublicKeyAsJWK: boolean = process.env.SEND_PUBLIC_KEY_AS === "JWK";
+const sendPublicKeyAsJWK: boolean = process.env.SEND_PUBLIC_KEY_AS !== "PEM-RSA";
 
 /* tslint:disable */
 const privateRsaKey =  { kty: 'RSA',
@@ -21,7 +21,12 @@ dp: 'Ojkgb55nTZhJVQlGAyHi2W2HfY6eEobdI61kvpHMk9xD28aCRFONpOmrF7ZUmTZPl-WZKYfDmYS
 dq: 'K8LwwZxfB-pW2Cw6zLyYMrH4Y1duUzPGschn0zg34dr2bqz0d-5Y6LrV9I4Rr43U6rXxdHcRgjKISAEtNbDvCfMtzl0IgyaPO4LP-nRuKxu6Im1u3Oy_Xa7UrFt-1z0bLTSJpqiKc7M2eUq3E05kgJPn3JJlBYL5Amg0FTEjybU',
 qi: 'accVhlQlH3BHbxNs-mgSLwQCDkxsIApvHm9cKBS8HK0XvQrB4FQttx97f6h0cSZVqesGJKIeE8swHVCcgQaYNHgTlJvuGfJVWlwXuR-rI-J0kBcWoBB-r-KcNTqh4YHdsmBIze0ET9U_MrZKfI6xh6tQ0VsnvpYszlCir0UHsV8' };
 
+const kid = jose.KJUR.jws.JWS.getJWKthumbprint(privateRsaKey);
+
 const jwkPub2 = { kty: 'RSA',
+"use": "sig",
+"kid": kid,
+"alg": "RS256",
 n: 'nE4xn_P1_Zzhi6ovBAlfCP3u2sNyK0V48DmPL1YSqQHvzdXo0_44HDZ9vOPBXPAZ9OztCybGi_567QYQZsjIZvOvmror5Y3_XRe6NAEA_Xbsql59CZ2-oPCmQ9NQGVMzlA_-oUFxImAVntYcjBK-ewVUN03xpqy-ri9u1fnsGTVXDtdjP1x7IegTsd10EhrbLrxUlg-gobNVNPR-e5yv9k8PqtssVOR0AjdDxkTk3w860s4LW03kpeoNq88ZTG28OLYd5y3WFJ0J8eP8mnDWewpEntJmxlYmhNQZPGOuV2hZmi3mFxvKy1J6SmK0t0cQ49Gncqdcc-RqKUVHrVJkVw',
 e: 'AQAB' };
 
@@ -71,7 +76,7 @@ const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, s
         refreshToken = randomstring.generate();
     }
 
-    const header = { typ: "JWT", alg: "RS256", kid: jose.KJUR.jws.JWS.getJWKthumbprint(privateRsaKey) };
+    const header = { typ: "JWT", alg: "RS256", kid };
 
     const accessTokenPayload: ITokenPayload = {
         iss: publicAddress(serverSpec),
@@ -131,7 +136,9 @@ export default generateTokens;
 
 export const getPublickey = () => {
     if (sendPublicKeyAsJWK) {
-        return jwkPub2;
+        return {
+            "keys": [ jwkPub2 ]
+        };
     } else {
         return {
             value: publicRsaKeyPEM
