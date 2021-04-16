@@ -10,7 +10,7 @@
     "cors": "^2.7.1",
     "express": "^4.17.1",
     "immutable": "^3.8.1",
-    "jsrsasign": "^8.0.20",
+    "jsrsasign": "^10.2.0",
     "nosql": "^3.0.3",
     "qs": "^6.0.4",
     "randomstring": "^1.0.7",
