@@ -55,7 +55,7 @@ const userInfos: { [key: string]: IUserInfo } = {
             "ROLE_TEAM_USER"
         ],
         groups: [
-            "EXTERNAL"
+            "CRO"
         ]
     }
 };
@@ -88,7 +88,7 @@ const clients: IClient[] = [
     {
         client_id: "marvin-live",
         client_secret: "Design Hub",
-        redirect_uris: ["http://192.168.68.112:8888/domains/synergy/callback"],
+        redirect_uris: ["http://192.168.68.109:8888/domains/demoeu/callback"],
         scope: "bar openid read"
     },
     {

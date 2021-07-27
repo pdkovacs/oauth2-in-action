@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
 const group1 = {
-    groupName: "group1",
+    groupName: "VIP",
     id: 0,
     members: [
         {
             id: 0,
-            userName: "user1"
+            userName: "alice"
         }
     ],
     team: {
@@ -18,12 +18,12 @@ const group1 = {
 };
 
 const group2 = {
-    groupName: "group2",
-    id: 0,
+    groupName: "CRO",
+    id: 1,
     members: [
         {
             id: 0,
-            userName: "user2"
+            userName: "carol"
         }
     ],
     team: {
@@ -39,8 +39,46 @@ export const getGroups = (req: Request, res: Response) => {
     res.json([group1, group2]);
 };
 
+interface  SynergyUser {
+    readonly id: number;
+    readonly userName: string;
+}
+
+interface SynergyProjectListResponseItem {
+    readonly id: number;
+    readonly team: any;
+    readonly author: SynergyUser;
+    readonly members: SynergyUser[];
+    readonly abbreviation: string;
+    readonly title: string;
+    readonly externalId: string;
+    readonly description: string;
+    readonly conclusion: string;
+    readonly status: string;
+    readonly created: string;
+}
+
+const projects: SynergyProjectListResponseItem[] = [
+    {
+        id: 0,
+        team: {
+            demoTeam: true,
+            id: 0,
+            liveChatOn: true,
+            subdomain: "string"
+        },
+        author: {id: 0, userName: "alice"},
+        members: [{id: 0, userName: "alice"}],
+        abbreviation: "P1",
+        title: "Project 1",
+        externalId: "0",
+        description: "Project 1 desc",
+        conclusion: "WTF?",
+        status: "some",
+        created: new Date().toString()
+    }
+];
+
 export const getProjects = (req: Request, res: Response) => {
-    res.writeHead(200);
-    res.write("[]");
-    res.end();
+    res.json(projects);
 };
