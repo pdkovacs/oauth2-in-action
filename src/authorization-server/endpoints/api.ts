@@ -80,5 +80,6 @@ const projects: SynergyProjectListResponseItem[] = [
 ];
 
 export const getProjects = (req: Request, res: Response) => {
+    console.log(req.headers.authorization);
     res.json(projects);
 };
