@@ -4,6 +4,6 @@ import logger from "../../logger";
 
 export default (req: Request, res: Response) => {
     const publicKey: any = getPublickey();
-    logger.createChild("getPublicKey").info("Public key is being served: %o", publicKey);
+    logger.child("getPublicKey").info("Public key is being served: %o", publicKey);
     res.send(publicKey);
 };

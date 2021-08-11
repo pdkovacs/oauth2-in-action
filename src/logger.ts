@@ -1,21 +1,22 @@
 import * as util from "util";
 import * as winston from "winston";
+import { createLogger, format as winstonFormat } from "winston";
 
-const tsFormat = () => new Date().toISOString();
-const baseLogger = new (winston.Logger)({
+const baseLogger = createLogger({
+    format: winston.format.combine(
+        winston.format.splat(),
+        winston.format.timestamp(),
+        winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+        winston.format.timestamp()
+    ),
     transports: [
-        new (winston.transports.Console)({
-            timestamp: tsFormat,
-            colorize: false
-        })
+        new winston.transports.Console()
     ]
 });
 
-const createChild: (context: string) => ContextAwareLogger = context => {
-    return new ContextAwareLogger(context);
+const createChild: (context: string) => winston.Logger = context => {
+    return baseLogger.child(context);
 };
-
-type CreateChildContext = (context: string) => winston.LoggerInstance;
 
 const contextPrefix = (context: string) => context ? context + ": " : "";
 
@@ -63,7 +64,7 @@ export class ContextAwareLogger {
         baseLogger.level = level;
     }
 
-    public createChild(context: string): ContextAwareLogger {
+    public child(context: string): winston.Logger {
         return createChild(context);
     }
 }

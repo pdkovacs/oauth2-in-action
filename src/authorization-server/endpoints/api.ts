@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import logger from "../../logger";
+import { getUserInfos } from "../data";
 
 const group1 = {
     groupName: "VIP",
@@ -58,6 +60,8 @@ interface SynergyProjectListResponseItem {
     readonly created: string;
 }
 
+const userInfos = getUserInfos();
+
 const projects: SynergyProjectListResponseItem[] = [
     {
         id: 0,
@@ -67,12 +71,30 @@ const projects: SynergyProjectListResponseItem[] = [
             liveChatOn: true,
             subdomain: "string"
         },
-        author: {id: 0, userName: "alice"},
-        members: [{id: 0, userName: "alice"}],
-        abbreviation: "P1",
-        title: "Project 1",
+        author: {id: 0, userName: userInfos.alice.sub},
+        members: [{id: 0, userName: userInfos.alice.sub}, {id: 1, userName: userInfos.bob.sub}],
+        abbreviation: "SYNPROJ1",
+        title: "Synergy Project 1",
         externalId: "0",
-        description: "Project 1 desc",
+        description: "Synergy Project 1 desc",
+        conclusion: "WTF?",
+        status: "some",
+        created: new Date().toString()
+    },
+    {
+        id: 1,
+        team: {
+            demoTeam: true,
+            id: 0,
+            liveChatOn: true,
+            subdomain: "string"
+        },
+        author: {id: 0, userName: userInfos.alice.sub},
+        members: [{id: 0, userName: userInfos.alice.sub}, {id: 2, userName: userInfos.carol.sub}],
+        abbreviation: "SYNPROJ2",
+        title: "Synergy Project 2",
+        externalId: "1",
+        description: "Synergy Project 2 desc",
         conclusion: "WTF?",
         status: "some",
         created: new Date().toString()
@@ -80,6 +102,11 @@ const projects: SynergyProjectListResponseItem[] = [
 ];
 
 export const getProjects = (req: Request, res: Response) => {
-    console.log(req.headers.authorization);
-    res.json(projects);
+    const token = req.headers.authorization.substr("Bearer ".length);
+    const tokenParts = token.split(".");
+    const payload = JSON.parse( Buffer.from(tokenParts[1], "base64").toString("utf8"));
+    console.log(payload.sub);
+    const userProjects = projects.filter(proj => proj.members.find(member => payload.sub));
+    logger.log("info", "Returning %o for %s", userProjects, payload.sub);
+    res.json(userProjects);
 };
