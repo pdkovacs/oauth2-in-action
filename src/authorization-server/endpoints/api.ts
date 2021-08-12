@@ -85,7 +85,7 @@ const projects: SynergyProjectListResponseItem[] = [
         id: 1,
         team: {
             demoTeam: true,
-            id: 0,
+            id: 1,
             liveChatOn: true,
             subdomain: "string"
         },
