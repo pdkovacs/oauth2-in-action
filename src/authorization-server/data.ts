@@ -87,7 +87,7 @@ const clients: IClient[] = [
     {
         client_id: "marvin-live",
         client_secret: "Design Hub",
-        redirect_uris: ["http://192.168.68.112:8888/domains/synergy/callback"],
+        redirect_uris: ["http://localhost:8888/domains/internal/callback"],
         scope: "bar openid read"
     },
     {

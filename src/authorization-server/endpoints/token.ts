@@ -14,7 +14,7 @@ export default (serverSpec: string) => (req: Request, res: Response) => {
     let clientId: string;
     let clientSecret: string;
 
-    const ctxLogger = logger.createChild("tokenEndpoint");
+    const ctxLogger = logger.child("tokenEndpoint");
 
     const auth = req.headers.authorization as string;
     if (auth) {
@@ -70,7 +70,7 @@ export default (serverSpec: string) => (req: Request, res: Response) => {
                 // const tokenResponse = { access_token: accessToken, token_type: "Bearer", scope: cscope };
                 // res.status(200).json(tokenResponse);
 
-                ctxLogger.info("Issued tokens for code %s", req.body.code, tokenResponse);
+                ctxLogger.info("Issued tokens for code %s, %s", req.body.code, tokenResponse);
                 return;
             } else {
                 ctxLogger.error("Client mismatch, expected %s got %s", code.request.client_id, clientId);

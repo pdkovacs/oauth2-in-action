@@ -38,7 +38,7 @@ ewVUN03xpqy+ri9u1fnsGTVXDtdjP1x7IegTsd10EhrbLrxUlg+gobNVNPR+e5yv
 9k8PqtssVOR0AjdDxkTk3w860s4LW03kpeoNq88ZTG28OLYd5y3WFJ0J8eP8mnDW
 ewpEntJmxlYmhNQZPGOuV2hZmi3mFxvKy1J6SmK0t0cQ49Gncqdcc+RqKUVHrVJk
 VwIDAQAB
------END PUBLIC KEY-----`
+-----END PUBLIC KEY-----`;
 /* tslint:enable */
 
 /**
@@ -68,7 +68,7 @@ const packUpTokenPayload = (header: any, payload: ITokenPayload) => {
 const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, scope: string[],
                         nonce?: string, generateRefreshToken?: boolean) => {
 
-    const ctxLogger = logger.createChild("generateTokens");
+    const ctxLogger = logger.child("generateTokens");
 
     let refreshToken = null;
 

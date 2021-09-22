@@ -48,7 +48,7 @@ app.get("/authorize", authorizationEndpoint);
 app.get("/oauth/authorize", authorizationEndpoint);
 app.get("/jwks", publickeyEndpoint);
 app.get("/logout", (req: express.Request, res: express.Response) => {
-    const log = logger.createChild("/logout place-holder");
+    const log = logger.child("/logout place-holder");
     log.info("Request to redirect to %s after logging user back is noted", req.query.service);
     res.end();
 });
@@ -75,7 +75,7 @@ for (const netif of Object.keys(networkInterfaces)) {
     }
 }
 
-const server = app.listen(serverPort, listenAddress, () => {
+const server = app.listen(serverPort, "localhost", () => {
   const host = (server.address() as net.AddressInfo).address;
   const port = (server.address() as net.AddressInfo).port;
   const serverSpec = `${host}:${port}`;
