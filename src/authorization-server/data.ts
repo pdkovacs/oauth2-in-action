@@ -1,5 +1,9 @@
 import * as randomstring from "randomstring";
 
+import { promisify } from "util";
+import * as fs from "fs";
+const readFile = promisify(fs.readFile);
+
 export const serverPort = 9001;
 export const publicAddress = (serverSpec: string) => process.env.PUBLIC_ADDRESS || `http://${serverSpec}`;
 
@@ -71,35 +75,17 @@ interface IClient {
     scope: string;
 }
 
-const clients: IClient[] = [
-    {
-        client_id: "oauth-client-1",
-        client_secret: "oauth-client-secret-1",
-        redirect_uris: ["http://design.test/icons/login"],
-        scope: "foo bar"
-    },
-    {
-        client_id: "oauth-client-2",
-        client_secret: "oauth-client-secret-2",
-        redirect_uris: ["http://localhost:8080/login"],
-        scope: "openid profile email phone address"
-    },
-    {
-        client_id: "marvin-live",
-        client_secret: "Design Hub",
-        redirect_uris: ["http://localhost:8888/domains/internal/callback"],
-        scope: "bar openid read"
-    },
-    {
-        client_id: "native-client-1",
-        client_secret: "oauth-native-secret-1",
-        redirect_uris: ["mynativeapp://"],
-        scope: "openid profile email phone address"
-    }
-];
+const configFile = process.env.CONFIG_FILE || "config.json";
 
-export const getClient = (clientId: string) => clients.find(client => client.client_id === clientId);
-export const getClients = () => clients;
+export const getClients = async (): Promise<IClient[]> => {
+    const content = await readFile(configFile, "utf8");
+    return JSON.parse(content).clients;
+};
+
+export const getClient = async (clientId: string): Promise<IClient> => {
+    const clients = await getClients();
+    return clients.find(client => client.client_id === clientId);
+};
 
 export interface IAuthorizationRequest {
     response_type: string;

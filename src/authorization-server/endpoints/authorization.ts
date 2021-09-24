@@ -8,9 +8,9 @@ import { getUserInfos, IAuthorizationRequest } from "../data";
 
 import * as __ from "underscore";
 
-export default (req: Request, res: Response) => {
+export default async (req: Request, res: Response) => {
 
-    const client = getClient(req.query.client_id as string);
+    const client = await getClient(req.query.client_id as string);
 
     if (!client) {
         logger.log("error", "Unknown client %s", req.query.client_id as string);

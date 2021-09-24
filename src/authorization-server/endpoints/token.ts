@@ -9,7 +9,7 @@ import logger from "../../logger";
 import nosql from "../store";
 import generateTokens from "./generateTokens";
 
-export default (serverSpec: string) => (req: Request, res: Response) => {
+export default (serverSpec: string) => async (req: Request, res: Response) => {
     let clientCredentials: string[];
     let clientId: string;
     let clientSecret: string;
@@ -37,7 +37,7 @@ export default (serverSpec: string) => (req: Request, res: Response) => {
         clientSecret = req.body.client_secret;
     }
 
-    const client = getClient(clientId);
+    const client = await getClient(clientId);
     if (!client) {
         ctxLogger.error("Unknown client %s", clientId);
         res.status(401).json({error: "invalid_client"});
@@ -85,7 +85,7 @@ export default (serverSpec: string) => (req: Request, res: Response) => {
     } else if (req.body.grant_type === "client_credentials") {
         ctxLogger.info("request of type client_credentials: %o", req.body);
         const scope = req.body.scope ? req.body.scope.split(" ") : undefined;
-        const client1 = getClient(clientId); // FIXME: client1 -> client | FIXME (?req?).query
+        const client1 = await getClient(clientId); // FIXME: client1 -> client | FIXME (?req?).query
         const cscope = client1.scope ? client1.scope.split(" ") : undefined;
         if (__.difference(scope, cscope).length > 0) {
             // client asked for a scope it couldn"t have

@@ -10,7 +10,7 @@ import * as qs from "qs";
 import * as __ from "underscore";
 import * as __string from "underscore.string";
 
-export default (serverSpec: string) => (req: Request, res: Response) => {
+export default (serverSpec: string) => async (req: Request, res: Response) => {
 
     const reqid = req.body.reqid;
     const query = getAuthorizationRequest(reqid);
@@ -38,7 +38,7 @@ export default (serverSpec: string) => (req: Request, res: Response) => {
 
             const scope = getScopesFromForm(req.body);
 
-            const client = getClient(query.client_id);
+            const client = await getClient(query.client_id);
             const cscope = client.scope ? client.scope.split(" ") : undefined;
             if (__.difference(scope, cscope).length > 0) {
                 // client asked for a scope it couldn't have

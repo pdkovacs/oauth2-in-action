@@ -40,8 +40,9 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
     next();
 });
 
-app.get("/", (req: express.Request, res: express.Response) => {
-    res.render("index", {clients: getClients(), authServer});
+app.get("/", async (req: express.Request, res: express.Response) => {
+    const clients = await getClients();
+    res.render("index", {clients, authServer});
 });
 
 app.get("/authorize", authorizationEndpoint);
@@ -65,20 +66,26 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
 // clear the database
 nosql.clear();
 
-let listenAddress;
-const networkInterfaces = os.networkInterfaces();
-for (const netif of Object.keys(networkInterfaces)) {
-    for (const ni of networkInterfaces[netif]) {
-        if (ni.address.startsWith("192.")) {
-            listenAddress = ni.address;
+let listenAddress = process.env.ID_PROVIDER_LISTEN_ADDRESS;
+if (!listenAddress) {
+    const networkInterfaces = os.networkInterfaces();
+    for (const netif of Object.keys(networkInterfaces)) {
+        for (const ni of networkInterfaces[netif]) {
+            if (ni.address.startsWith("192.")) {
+                listenAddress = ni.address;
+            }
         }
     }
 }
 
-const localhostScheme = true;
+const localhostScheme = false;
 
 const server = app.listen(serverPort, localhostScheme ? "localhost" : listenAddress, () => {
-  const host = localhostScheme ? "localhost" : (server.address() as net.AddressInfo).address;
+  const host = localhostScheme
+    ? "localhost"
+    : process.env.ID_PROVIDER_HOSTNAME
+        ? process.env.ID_PROVIDER_HOSTNAME
+        : (server.address() as net.AddressInfo).address;
   const port = (server.address() as net.AddressInfo).port;
   const serverSpec = `${host}:${port}`;
   app.get("/.well-known/openid-configuration", wellKnown(serverSpec));
