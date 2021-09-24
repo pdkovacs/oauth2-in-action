@@ -41,12 +41,7 @@ VwIDAQAB
 -----END PUBLIC KEY-----`;
 /* tslint:enable */
 
-/**
- * Allows the payload to be a hybrid of both auth and id tokens for the use case
- * where plain OAuth 2 is used (as an OpenID Connect on diet) for authentication
- * and a single token is issued to act both as an access token and as an ID token.
- */
-interface ITokenPayload {
+interface IAccessTokenPayload {
     iss: string;
     sub: string;
     aud: string;
@@ -58,7 +53,21 @@ interface ITokenPayload {
     nonce?: string;
 }
 
-const packUpTokenPayload = (header: any, payload: ITokenPayload) => {
+interface IIDTokenPayload {
+    iss: string;
+    sub: string;
+    aud: string;
+    iat: number;
+    exp: number;
+    jti: string;
+    authorities?: string[];
+    username?: string;
+    nonce?: string;
+    email: string;
+    email_verified: boolean;
+}
+
+const packUpTokenPayload = (header: any, payload: IAccessTokenPayload | IIDTokenPayload) => {
     const stringHeader = JSON.stringify(header);
     const stringPayload = JSON.stringify(payload);
     const privateKey = jose.KEYUTIL.getKey(privateRsaKey);
@@ -78,7 +87,7 @@ const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, s
 
     const header = { typ: "JWT", alg: "RS256", kid };
 
-    const accessTokenPayload: ITokenPayload = {
+    const accessTokenPayload: IAccessTokenPayload = {
         iss: publicAddress(serverSpec),
         sub: user.sub,
         aud: clientId,
@@ -93,7 +102,7 @@ const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, s
         accessTokenPayload.nonce = nonce;
     }
 
-    const idTokenPayload: ITokenPayload = {
+    const idTokenPayload: IIDTokenPayload = {
         iss: publicAddress(serverSpec),
         sub: user.sub,
         aud: clientId,
@@ -101,7 +110,9 @@ const generateTokens = (serverSpec: string, clientId: string, user: IUserInfo, s
         exp:  Math.floor(Date.now() / 1000) + (5 * 60),
         jti: randomstring.generate(),
         authorities: user.authorities,
-        username: user.email
+        username: user.email,
+        email: user.email,
+        email_verified: user.email_verified
     };
 
     if (nonce) {

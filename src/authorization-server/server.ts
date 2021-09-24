@@ -75,11 +75,13 @@ for (const netif of Object.keys(networkInterfaces)) {
     }
 }
 
-const server = app.listen(serverPort, "localhost", () => {
-  const host = (server.address() as net.AddressInfo).address;
+const localhostScheme = true;
+
+const server = app.listen(serverPort, localhostScheme ? "localhost" : listenAddress, () => {
+  const host = localhostScheme ? "localhost" : (server.address() as net.AddressInfo).address;
   const port = (server.address() as net.AddressInfo).port;
   const serverSpec = `${host}:${port}`;
-  app.get("/oidc/.well-known/openid-configuration", wellKnown(serverSpec));
+  app.get("/.well-known/openid-configuration", wellKnown(serverSpec));
   app.post("/approve", approveEndpoint(serverSpec));
   app.post("/oauth/token", tokenEndpoint(serverSpec));
     

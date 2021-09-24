@@ -81,8 +81,8 @@ const clients: IClient[] = [
     {
         client_id: "oauth-client-2",
         client_secret: "oauth-client-secret-2",
-        redirect_uris: ["http://localhost:8080/oauth2-login"],
-        scope: "bar"
+        redirect_uris: ["http://localhost:8080/login"],
+        scope: "openid profile email phone address"
     },
     {
         client_id: "marvin-live",
