@@ -8,7 +8,7 @@
     "body-parser": "^1.19.0",
     "consolidate": "^0.13.1",
     "cors": "^2.7.1",
-    "express": "^4.17.1",
+    "express": "^4.22.1",
     "immutable": "^3.8.1",
     "jsrsasign": "^10.5.25",
     "nosql": "^3.0.3",
